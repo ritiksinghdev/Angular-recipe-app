@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-xs-10">
+    <app-shopping-edit></app-shopping-edit>
+    <hr>
+    <ul class="list-group">
+      <a
+        class="list-group-item"
+        style="cursor: pointer"
+        *ngFor="let ingredient of ingredients; let i = index"
+        (click)="onEditItem(i)"
+      >
+        {{ ingredient.name }} ({{ ingredient.amount }})
+        <button class="btn " (click)="onDelete()">
+          X
+         </button>
+      </a>
+      
+    </ul>
+    <div class="row">
+      <div class="col-xs-12">
+        <button *ngIf="totalAmount" class="btn btn-primary" type="button" (click)="addtoPayment()">
+          Pay  ₹  {{totalAmount}}
+
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
