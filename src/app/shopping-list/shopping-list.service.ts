@@ -41,16 +41,22 @@ export class ShoppingListService {
     this.ingredientsChanged.next(this.ingredients.slice());
   }
 
-  deleteIngredient(index: number) {
-    this.ingredients.splice(index, 1);
-    this.ingredientsChanged.next(this.ingredients.slice());
-  }
+ 
   totalAmount(){
     this.temp=0
     for(let i in this.ingredients){
       this.temp+=this.ingredients[i]['amount']
     }
      this.totalAmt.next(this.temp)
+     
      return this.temp
+     
+  }
+  deleteIngredient(index: number) {
+    console.log("called ...............")
+    this.ingredients.splice(index, 1);
+    console.log(this.ingredients)
+    this.ingredientsChanged.next(this.ingredients.slice());
+    
   }
 }

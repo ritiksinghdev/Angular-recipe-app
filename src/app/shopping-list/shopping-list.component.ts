@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Ingredient } from '../shared/ingredient.model';
@@ -9,11 +9,13 @@ import { ShoppingListService } from './shopping-list.service';
   templateUrl: './shopping-list.component.html',
   styleUrls: ['./shopping-list.component.css']
 })
-export class ShoppingListComponent implements OnInit, OnDestroy {
+export class ShoppingListComponent implements OnInit, OnDestroy,OnChanges {
   ingredients: Ingredient[];
+  
   totalAmount:number;
   editedItemIndex: number;
   private subscription: Subscription;
+  private subscription1: Subscription;
 
   constructor(private slService: ShoppingListService) { }
 
@@ -21,19 +23,33 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
     this.ingredients = this.slService.getIngredients();
     this.totalAmount=this.slService.totalAmount()
 
-    console.log(this.totalAmount)
-    this.subscription=this.slService.totalAmt.subscribe()
+    console.log("--------------> oninit",this.totalAmount)
     this.subscription = this.slService.ingredientsChanged
       .subscribe(
         (ingredients: Ingredient[]) => {
           this.ingredients = ingredients;
-          // this.totalAmount =ingredients['amount']
+          
         }
       );
+     
   }
-   
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes)
+
+    
+  }
   onEditItem(index: number) {
     this.slService.startedEditing.next(index);
+  }
+  ondelete() {
+    
+    
+    this.totalAmount=this.slService.totalAmount()
+  }
+  deelete() {
+    
+    this.slService.deleteIngredient(this.editedItemIndex);
+    this.totalAmount=this.slService.totalAmount()
   }
 
   ngOnDestroy() {
@@ -42,9 +58,5 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
   addtoPayment(){
     console.log(this.slService.getIngredients());
   }
-
-  onDelete() {
-    this.slService.deleteIngredient(this.editedItemIndex);
-    this.totalAmount=this.slService.totalAmount()
-  }
 }
+  

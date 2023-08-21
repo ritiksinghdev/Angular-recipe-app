@@ -1,6 +1,12 @@
 <div class="row">
   <div class="col-xs-10">
-    <app-shopping-edit></app-shopping-edit>
+    <app-shopping-edit
+    [tsum] ="totalAmount"
+    (sum)="ondelete()"
+    >
+
+
+    </app-shopping-edit>
     <hr>
     <ul class="list-group">
       <a
@@ -10,7 +16,7 @@
         (click)="onEditItem(i)"
       >
         {{ ingredient.name }} ({{ ingredient.amount }})
-        <button class="btn " (click)="onDelete()">
+        <button class="btn " (click)="deelete()">
           X
          </button>
       </a>
@@ -23,6 +29,7 @@
 
         </button>
       </div>
+      
     </div>
   </div>
 </div>

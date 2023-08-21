@@ -2,7 +2,11 @@ import {
   Component,
   OnInit,
   OnDestroy,
-  ViewChild
+  ViewChild,
+  Output,
+  EventEmitter,
+  Input,
+  SimpleChanges
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -17,11 +21,12 @@ import { ShoppingListService } from '../shopping-list.service';
 })
 export class ShoppingEditComponent implements OnInit, OnDestroy {
   @ViewChild('f', { static: false }) slForm: NgForm;
+  @Input() tsum:number;
   subscription: Subscription;
   editMode = false;
   editedItemIndex: number;
   editedItem: Ingredient;
-  sum:number;
+  @Output() sum= new EventEmitter<number>;
 
   constructor(private slService: ShoppingListService) { }
 
@@ -38,7 +43,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
           })
         }
       );
-      this.sum=this.slService.totalAmount()
+      // this.sum=this.slService.totalAmount()
   }
 
   onSubmit(form: NgForm) {
@@ -46,8 +51,14 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
     const newIngredient = new Ingredient(value.name, value.amount);
     if (this.editMode) {
       this.slService.updateIngredient(this.editedItemIndex, newIngredient);
+      this.tsum = this.slService.totalAmount();
+      console.log(this.sum)
+      this.sum.emit(this.tsum)
     } else {
       this.slService.addIngredient(newIngredient);
+      this.tsum = this.slService.totalAmount();
+      console.log(this.sum)
+      this.sum.emit(this.tsum)
     }
     this.editMode = false;
     form.reset();
@@ -59,12 +70,19 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   }
 
   onDelete() {
-    this.slService.deleteIngredient(this.editedItemIndex);
-    console.log(this.slService.totalAmount());
     
+    this.slService.deleteIngredient(this.editedItemIndex);
+    console.log(this.editedItemIndex)
+    this.tsum = this.slService.totalAmount();
+    console.log(this.sum)
+    this.sum.emit(this.tsum)
     this.onClear();
+    return this.sum
   }
-
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes)
+    
+  }
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
